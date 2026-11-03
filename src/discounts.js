@@ -47,29 +47,3 @@ export function discountFor(subtotalCents, coupon) {
       throw new RangeError(`unknown coupon kind: ${coupon.kind}`);
   }
 }
-
-/**
- * Ordered highest threshold first, so the first tier a cart qualifies for is
- * the only one that applies.
- */
-const VOLUME_TIERS = [
-  { minUnits: 25, percent: 10 },
-  { minUnits: 10, percent: 5 },
-];
-
-/**
- * Returns how many cents the volume discount takes off `subtotalCents` for a
- * cart holding `unitCount` units in total (cart-wide, summed across every
- * line — see itemCount). Applies the single highest tier `unitCount`
- * qualifies for; tiers do not stack. Returns 0 if `unitCount` is below the
- * lowest tier's threshold (10).
- */
-export function volumeDiscountFor(subtotalCents, unitCount) {
-  const tier = VOLUME_TIERS.find((candidate) => unitCount >= candidate.minUnits);
-  if (!tier) {
-    return 0;
-  }
-  return clampToZero(
-    Math.min(subtotalCents, roundCents((subtotalCents * tier.percent) / 100)),
-  );
-}

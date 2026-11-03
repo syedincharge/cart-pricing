@@ -1,4 +1,4 @@
-import { discountFor, volumeDiscountFor } from './discounts.js';
+import { discountFor } from './discounts.js';
 import { clampToZero } from './money.js';
 
 /** Creates an empty cart. */
@@ -44,14 +44,12 @@ export function subtotal(cart) {
 }
 
 /**
- * Cart value in cents after taking the volume discount off the subtotal and
- * then applying `coupons`, in the order given. Each coupon applies to the
- * running total left by the discount before it.
+ * Cart value in cents after applying `coupons`, in the order given. Each
+ * coupon applies to the running total left by the coupon before it.
  */
 export function total(cart, coupons = []) {
-  const base = subtotal(cart);
   return coupons.reduce(
     (running, coupon) => clampToZero(running - discountFor(running, coupon)),
-    base - volumeDiscountFor(base, itemCount(cart)),
+    subtotal(cart),
   );
 }

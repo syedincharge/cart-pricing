@@ -33,15 +33,12 @@ Returns the total number of units across all lines.
 
 ### `subtotal(cart)`
 
-Returns the cart value in cents before any volume discount or coupon. This is the
-raw line-item sum, regardless of how many units the cart holds.
+Returns the cart value in cents before any coupon. This is the raw line-item sum.
 
 ### `total(cart, coupons = [])`
 
-Returns the cart value in cents after applying the volume discount and then
-`coupons` **in the order given**. The volume discount applies to the raw subtotal
-first: at 10 units the cart gets 5% off, at 25 units 10% off. Each coupon then
-applies to the running total left by the previous discount or coupon, so coupon
+Returns the cart value in cents after applying `coupons` **in the order given**.
+Each coupon applies to the running total left by the previous one, so coupon
 order changes the result. The total never drops below zero.
 
 ```js
@@ -64,20 +61,6 @@ a non-negative integer, otherwise `RangeError`.
 
 Returns how many cents `coupon` takes off `subtotalCents`, capped at the
 value passed in. Throws `RangeError` for an unknown coupon kind.
-
-### `volumeDiscountFor(subtotalCents, unitCount)`
-
-Returns how many cents the volume discount takes off `subtotalCents` based on
-the cart-wide unit count. The discount applies to the highest qualifying tier:
-10–24 units gets 5% off, 25 or more units gets 10% off. Tiers do not stack; 25
-units gets 10%, not 15%. Returns 0 if the cart holds fewer than 10 units. Never
-returns more than `subtotalCents`.
-
-```js
-volumeDiscountFor(10000, 10);  // 500 (5% of 10000)
-volumeDiscountFor(10000, 25);  // 1000 (10% of 10000)
-volumeDiscountFor(10000, 9);   // 0 (below threshold)
-```
 
 ## `money.js`
 
