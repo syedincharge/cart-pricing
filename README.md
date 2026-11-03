@@ -18,9 +18,8 @@ somewhere to go.
 
 ## Usage
 
-The cart applies tiered volume discounts automatically: 5% off at 10 units, 10%
-off at 25 units (cart-wide). The volume discount applies **first** to the raw
-subtotal, then coupons apply **in order** to the running total:
+Coupons apply **in the order given**, each one discounting the running total left
+by the one before it:
 
 ```js
 import { createCart, addItem, total, subtotal, itemCount } from './src/cart.js';
@@ -31,18 +30,16 @@ addItem(cart, { sku: 'mug', unitPriceCents: 1000, quantity: 10 });
 
 subtotal(cart);                                        // 10000
 itemCount(cart);                                       // 10
-total(cart);                                           // 9500 (10000 - 5% volume discount)
+total(cart);                                           // 10000 (no coupons)
 
 total(cart, [percentOff('SAVE10', 10), amountOff('FIVER', 500)]);
-// Discounts in order: 9500 -> -10% (950) -> 8550 -> -500 -> 8050
+// Discounts in order: 10000 -> -10% (1000) -> 9000 -> -500 -> 8500
 
 total(cart, [amountOff('FIVER', 500), percentOff('SAVE10', 10)]);
-// Discounts in order: 9500 -> -500 -> 9000 -> -10% (900) -> 8100
+// Discounts in order: 10000 -> -500 -> 9500 -> -10% (950) -> 8550
 ```
 
-Volume discount precedence is fixed: volume tier first, coupons in the order
-given. This makes the volume discount amount predictable regardless of which
-coupons are present.
+Coupon order changes the result, so the order is the caller's to choose.
 
 ## Why different models per agent
 
@@ -73,14 +70,14 @@ warning and runs the architect on the session model — change the line in
 .claude/settings.json            pre-approves the test commands
 CLAUDE.md                        project conventions every agent inherits
 src/                             money.js, discounts.js, cart.js
-test/                            cart.test.js — 26 tests, all passing
-docs/API.md                      current public API
+test/                            cart.test.js — 13 tests, all passing
+docs/API.md                      current public API (no DESIGN.md yet — the architect writes it)
 ```
 
 ## Run it
 
 ```bash
-npm test                    # 26 passing, no install needed
+npm test                    # 13 passing, no install needed
 claude --agent orchestrator # start the session as the orchestrator
 ```
 
