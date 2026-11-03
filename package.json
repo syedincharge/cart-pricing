@@ -1,0 +1,13 @@
+{
+  "name": "cart-pricing",
+  "version": "0.1.0",
+  "description": "A small cart pricing engine used as the worked example for the Claude Code orchestrator + subagents lesson.",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}
